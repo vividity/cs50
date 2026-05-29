@@ -1,6 +1,7 @@
 from mailbox import NotEmptyError
 import sys
 from pathlib import Path
+from PIL import Image, ImageDraw
 
 class Maze:
     def __init__(self, filename) -> None:
@@ -29,6 +30,21 @@ class Maze:
                     self.walls.append((row,col))
                 col += 1
             row -= 1
+
+    def output_image(self, path):
+        img = Image.new("RGBA", (self.width * 10, (self.height + 1) * 10), "black")
+        path_coords = {(s.row, s.col) for s in path}
+        draw = ImageDraw.Draw(img)
+        for row in range(self.height + 1):
+            for col in range(self.width):
+                if (row, col) in self.walls:
+                    draw.rectangle((col * 10, row * 10, (col + 1) * 10, (row + 1) * 10), fill="black")
+                elif (row, col) in path_coords:
+                    draw.rectangle((col * 10, row * 10, (col + 1) * 10, (row + 1) * 10), fill="blue")
+                else:
+                    draw.rectangle((col * 10, row * 10, (col + 1) * 10, (row + 1) * 10), fill="white")
+        img.save(f"maze_{self.filename}.png")       
+
 
 class State:
     def __init__(self, row, col) -> None:
@@ -78,7 +94,7 @@ class Node:
 class Search:
     def __init__(self, maze) -> None:
         self.maze = maze
-
+        
         frontier = [Node(maze.start, maze)]
 
         explored = set()
@@ -100,10 +116,11 @@ class Search:
                     path.append(next_node.state)
                     next_node = next_node.parent_node
                 path.reverse()
+                self.path = path
                 print(path)
                 return
         
     
 m = Maze("maze1.txt")
-
-Search(m)
+s =Search(m)
+m.output_image(s.path)
