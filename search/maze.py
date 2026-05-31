@@ -38,11 +38,11 @@ class Maze:
         for row in range(self.height + 1):
             for col in range(self.width):
                 if (row, col) in self.walls:
-                    draw.rectangle((col * 10, row * 10, (col + 1) * 10, (row + 1) * 10), fill="black")
+                    draw.rectangle((col * 10, (self.height - row) * 10, (col + 1) * 10, (self.height - row + 1) * 10), fill="black")
                 elif (row, col) in path_coords:
-                    draw.rectangle((col * 10, row * 10, (col + 1) * 10, (row + 1) * 10), fill="blue")
+                    draw.rectangle((col * 10, (self.height - row) * 10, (col + 1) * 10, (self.height - row + 1) * 10), fill="blue")
                 else:
-                    draw.rectangle((col * 10, row * 10, (col + 1) * 10, (row + 1) * 10), fill="white")
+                    draw.rectangle((col * 10, (self.height - row) * 10, (col + 1) * 10, (self.height - row + 1) * 10), fill="white")
         img.save(f"maze_{self.filename}.png")       
 
 
